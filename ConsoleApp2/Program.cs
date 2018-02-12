@@ -15,20 +15,20 @@ namespace ConsoleApp2
         {
             PdfDocument doc = new PdfDocument();
             doc.LoadFromFile("sample.pdf");
-            Image emf = doc.SaveAsImage(0, Spire.Pdf.Graphics.PdfImageType.Metafile);
-            Image bmp = new Bitmap((int)(emf.Size.Width * 2), (int)(emf.Size.Height * 2)); //doc.SaveAsImage(0);
-            //Image zoomImg = new Bitmap((int)(emf.Size.Width * 2), (int)(emf.Size.Height * 2));
-            using (Graphics g = Graphics.FromImage(bmp))
+
+            var countDoc =  doc.Pages.Count;
+            for(var i=0; i < countDoc; i++)
             {
-                g.ScaleTransform(2.0f, 2.0f);
-                g.DrawImage(emf, new Rectangle(new Point(0, 0), emf.Size), new Rectangle(new Point(0, 15), emf.Size), GraphicsUnit.Pixel);
+                Image emf = doc.SaveAsImage(i, Spire.Pdf.Graphics.PdfImageType.Metafile);
+                Image bmp = new Bitmap((int)(emf.Size.Width * 2), (int)(emf.Size.Height * 2)); 
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.ScaleTransform(2.0f, 2.0f);
+                    g.DrawImage(emf, new Rectangle(new Point(0, 0), emf.Size), new Rectangle(new Point(0, 15), emf.Size), GraphicsUnit.Pixel);
+                }
+                bmp.Save($"convertToBmp{i}.bmp", ImageFormat.Bmp);
+                System.Diagnostics.Process.Start($"convertToBmp{i}.bmp");
             }
-            bmp.Save("convertToBmp.bmp", ImageFormat.Bmp);
-            System.Diagnostics.Process.Start("convertToBmp.bmp");
-            //emf.Save("convertToEmf.png", ImageFormat.Png);
-            //System.Diagnostics.Process.Start("convertToEmf.png");
-            //zoomImg.Save("convertToZoom.png", ImageFormat.Png);
-            //System.Diagnostics.Process.Start("convertToZoom.png");
         }
     }
 }
